@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2017-2025 slowtec GmbH <post@slowtec.de>
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
-use std::future;
+use std::future::{self, Future};
 
 use tokio_modbus::{
     client::{Context, Reader as _, Writer as _},
@@ -37,9 +37,10 @@ impl Service for TestService {
 
     type Exception = ExceptionCode;
 
-    type Future = future::Ready<Result<Self::Response, Self::Exception>>;
-
-    fn call(&self, req: Self::Request) -> Self::Future {
+    fn call(
+        &self,
+        req: Self::Request,
+    ) -> impl Future<Output = Result<Self::Response, Self::Exception>> {
         future::ready(self.handle(req))
     }
 }

@@ -3,7 +3,11 @@
 
 //! RTU server example
 
-use std::{future, thread, time::Duration};
+use std::{
+    future::{self, Future},
+    thread,
+    time::Duration,
+};
 
 use tokio_modbus::{prelude::*, server::rtu::Server};
 
@@ -13,9 +17,11 @@ impl tokio_modbus::server::Service for Service {
     type Request = SlaveRequest<'static>;
     type Response = Response;
     type Exception = ExceptionCode;
-    type Future = future::Ready<Result<Self::Response, Self::Exception>>;
 
-    fn call(&self, req: Self::Request) -> Self::Future {
+    fn call(
+        &self,
+        req: Self::Request,
+    ) -> impl Future<Output = Result<Self::Response, Self::Exception>> + Send {
         match req.request {
             Request::ReadInputRegisters(_addr, cnt) => {
                 let mut registers = vec![0; cnt.into()];

@@ -25,11 +25,11 @@ pub trait Service {
     /// Use [`tokio_modbus::ExceptionCode`](crate::ExceptionCode) as default.
     type Exception: Into<crate::ExceptionCode>;
 
-    /// The future response value.
-    type Future: Future<Output = Result<Self::Response, Self::Exception>> + Send;
-
     /// Process the request and return the response asynchronously.
-    fn call(&self, req: Self::Request) -> Self::Future;
+    fn call(
+        &self,
+        req: Self::Request,
+    ) -> impl Future<Output = Result<Self::Response, Self::Exception>> + Send;
 }
 
 impl<D> Service for D
@@ -40,10 +40,12 @@ where
     type Request = <D::Target as Service>::Request;
     type Response = <D::Target as Service>::Response;
     type Exception = <D::Target as Service>::Exception;
-    type Future = <D::Target as Service>::Future;
 
     /// A forwarding blanket impl to support smart pointers around [`Service`].
-    fn call(&self, req: Self::Request) -> Self::Future {
+    fn call(
+        &self,
+        req: Self::Request,
+    ) -> impl Future<Output = Result<Self::Response, Self::Exception>> {
         self.deref().call(req)
     }
 }

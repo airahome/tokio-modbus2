@@ -9,7 +9,7 @@
 use std::{
     collections::HashMap,
     fs::File,
-    future,
+    future::{self, Future},
     io::{self, BufReader},
     net::SocketAddr,
     path::Path,
@@ -92,9 +92,11 @@ impl tokio_modbus::server::Service for ExampleService {
     type Request = Request<'static>;
     type Response = Response;
     type Exception = ExceptionCode;
-    type Future = future::Ready<Result<Self::Response, Self::Exception>>;
 
-    fn call(&self, req: Self::Request) -> Self::Future {
+    fn call(
+        &self,
+        req: Self::Request,
+    ) -> impl Future<Output = Result<Self::Response, Self::Exception>> {
         let res = match req {
             Request::ReadInputRegisters(addr, cnt) => {
                 register_read(&self.input_registers.lock().unwrap(), addr, cnt)
