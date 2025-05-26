@@ -155,12 +155,12 @@ pub type Address = u16;
 ///
 /// - `true` is equivalent to `ON`, `1` and `0xFF00`.
 /// - `false` is equivalent to `OFF`, `0` and `0x0000`.
-pub(crate) type Coil = bool;
+pub type Coil = bool;
 
 /// Modbus uses 16 bit for its data items.
 ///
 /// Transmitted using a big-endian representation.
-pub(crate) type Word = u16;
+pub type Word = u16;
 
 /// Number of items to process.
 pub type Quantity = u16;
