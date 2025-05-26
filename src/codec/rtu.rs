@@ -167,6 +167,7 @@ fn get_response_pdu_len(adu_buf: &BytesMut) -> Result<Option<usize>> {
             }
             0x05 | 0x06 | 0x0B | 0x0F | 0x10 => 5,
             0x07 => 2,
+            0x15 => 9, // Note that this is a Jeff specific length for this response
             0x16 => 7,
             0x18 => {
                 if adu_buf.len() > 3 {
